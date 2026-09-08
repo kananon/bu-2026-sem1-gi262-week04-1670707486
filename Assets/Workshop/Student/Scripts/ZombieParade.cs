@@ -53,22 +53,41 @@ namespace Solution
         IEnumerator MoveParade()
         {
             //0. สร้างหัวงู
-
+            Parade.AddFirst(this.gameObject);
             while (isAlive)
             {
                 // 1. ดึงส่วนแรกของงูออกมา
-
+                LinkedListNode<GameObject> firstNode = Parade.First;
+                GameObject firstPart = firstNode.Value;
                 // 2. ดึงส่วนสุดท้ายของงูออกมา
-             
+                LinkedListNode<GameObject> lastNode = Parade.Last;
+                GameObject lastPart = lastNode.Value;
                 // 3. ลบส่วนสุดท้ายออกจาก LinkedList
-
+                Parade.RemoveLast();
                 // 5. กำหนดตำแหน่งและทิศทางของส่วนที่ถูกย้ายมาใหม่
                 // ให้ไปอยู่ที่ตำแหน่งของส่วนหัวงู (ซึ่งเพิ่งเคลื่อนที่ไปเมื่อครู่)
-   
+                int toX = 0;
+                int toY = 0;
+                bool isCollide = true;
+                while (isCollide == true)
+                {
+
+                    moveDirection = RandomizeDirection();
+                    toX = (int)(firstPart.transform.position.x + moveDirection.x);
+                    toY = (int)(firstPart.transform.position.y + moveDirection.y);
+                    isCollide = IsCollision(toX, toY);
+                }
                 //6. เคลื่อนที่
+                mapGenerator.mapdata[positionX, positionY] = null;
+                positionX = toX;
+                positionY = toY;
+
+                lastPart.transform.position = new Vector3(positionX, positionY, 0);
+                mapGenerator.mapdata[positionX, positionX] = this;
 
                 // 7. เพิ่มส่วนนั้นกลับเข้าไปเป็นส่วนที่สองของ LinkedList
                 // (ซึ่งก็คือส่วนแรกของลำตัว)
+                Parade.AddFirst(lastNode);
 
                 // รอตามเวลาที่กำหนดก่อนการเคลื่อนที่ครั้งต่อไป
                 yield return new WaitForSeconds(moveInterval);
@@ -77,16 +96,19 @@ namespace Solution
         private bool IsCollision(int x, int y)
         {
             // 4. ตรวจสอบสิ่งกีดขวาง
-            
+            if (HasPlacement(x, y))
+            {
+                return true;
+            }
             return false;
         }
-        void Move(Vector2 direction,GameObject targetMove)
+        void Move(Vector2 direction, GameObject targetMove)
         {
             int toX = (int)direction.x;
             int toY = (int)direction.y;
             Debug.Log("Move to: " + toX + "," + toY);
         }
-        
+
 
         // ฟังก์ชันสำหรับเพิ่มส่วนของงู (Grow)
         private void Grow()
