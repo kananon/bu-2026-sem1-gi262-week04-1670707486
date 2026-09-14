@@ -36,8 +36,7 @@ namespace Solution
 
         public void Attack(OOPEnemy _enemy)
         {
-            _enemy.energy -= AttackPoint;
-            Debug.Log(_enemy.name + " is energy " + _enemy.energy);
+            _enemy.TakeDamage(AttackPoint);
         }
         protected override void CheckDead()
         {

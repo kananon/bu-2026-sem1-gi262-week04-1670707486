@@ -14,8 +14,7 @@ namespace Solution
 
         public void Attack(OOPPlayer _player)
         {
-            _player.energy -= AttackPoint;
-            Debug.Log("player is energy " + _player.energy);
+            _player.TakeDamage(AttackPoint);
         }
     }
 }
